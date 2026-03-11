@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗺 WE TRAVEL — 旅遊規劃</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700;900&family=Bebas+Neue&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --ink: #1a1a2e; --white: #f5f0e8; --pink: #ff6b9d; --dark-pink: #c2185b;
+  --yellow: #ffd93d; --cyan: #6bcfff; --red: #ff4757; --green: #2ed573;
+  --panel-bg: #fdfaf4; --border: 3px solid #1a1a2e;
+  --shadow: 4px 4px 0 #1a1a2e; --shadow-pink: 4px 4px 0 #ff6b9d;
+}
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  background: var(--white);
+  font-family: 'Noto Sans TC', sans-serif;
+  color: var(--ink);
+  display: flex; flex-direction: column;
+}
+
+/* ===== HALFTONE ===== */
+body::before {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image: radial-gradient(circle, #1a1a2e08 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* ===== HEADER ===== */
+.header {
+  position: relative; z-index: 50;
+  background: var(--ink);
+  border-bottom: 4px solid var(--pink);
+  padding: 0 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px; flex-shrink: 0;
+}
+.header-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px; color: var(--white);
+  letter-spacing: 6px;
+  text-shadow: 2px 2px 0 var(--pink);
+}
+.header-logo span { color: var(--pink); }
+
+.header-nav { display: flex; gap: 2px; }
+.nav-tab {
+  background: none; border: none;
+  padding: 6px 14px; cursor: pointer;
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 12px; font-weight: 700;
+  color: rgba(245,240,232,0.5);
+  letter-spacing: 1px; position: relative;
+  transition: color 0.15s;
+  border-bottom: 3px solid transparent;
+}
+.nav-tab:hover { color: var(--white); }
+.nav-tab.active { color: var(--pink); border-bottom-color: var(--pink); }
+
+.header-user {
+  display: flex; align-items: center; gap: 10px;
+}
+.user-badge {
+  background: var(--pink); border: 2px solid var(--white);
+  padding: 3px 12px; font-size: 11px; font-weight: 900;
+  color: var(--ink); letter-spacing: 1px;
+  cursor: pointer; transition: background 0.15s;
+  clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+}
+.user-badge:hover { background: var(--yellow); }
+
+/* ===== MAIN LAYOUT ===== */
+.app-body {
+  flex: 1; overflow: hidden;
+  display: flex; position: relative; z-index: 5;
+}
+
+/* ===== PAGES ===== */
+.page { display: none; width: 100%; height: 100%; overflow-y: auto; padding: 20px; }
+.page.active { display: block; }
+.page::-webkit-scrollbar { width: 6px; }
+.page::-webkit-scrollbar-thumb { background: var(--pink); }
+.page::-webkit-scrollbar-track { background: var(--ink); }
+
+/* ===== MANGA PANEL STYLES ===== */
+.manga-panel {
+  background: var(--panel-bg);
+  border: var(--border);
+  box-shadow: var(--shadow);
+  position: relative;
+}
+.manga-panel-title {
+  background: var(--ink); color: var(--white);
+  padding: 6px 16px; font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; letter-spacing: 3px;
+  display: flex; align-items: center; gap: 8px;
+}
+.manga-panel-title .accent { color: var(--pink); }
+
+/* ===== HOME PAGE ===== */
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 16px; max-width: 1100px; margin: 0 auto;
+}
+
+/* Hero panel - spans 2 cols */
+.home-hero-panel {
+  grid-column: 1 / 3;
+  border: var(--border);
+  background: var(--ink);
+  box-shadow: var(--shadow-pink);
+  padding: 28px 32px;
+  position: relative; overflow: hidden;
+}
+.home-hero-panel::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(255,107,157,0.1) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.home-hero-panel .big-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 52px; color: var(--white);
+  letter-spacing: 4px; line-height: 1; position: relative;
+  text-shadow: 3px 3px 0 var(--pink);
+}
+.home-hero-panel .sub { color: var(--pink); font-size: 12px; letter-spacing: 3px; margin-bottom: 20px; }
+.hero-stats { display: flex; gap: 20px; position: relative; }
+.hero-stat {
+  background: var(--panel-bg); border: 2px solid var(--pink);
+  padding: 10px 16px; text-align: center; min-width: 70px;
+}
+.hero-stat .num { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--pink); display: block; line-height: 1; }
+.hero-stat .lbl { font-size: 10px; color: var(--ink); font-weight: 700; letter-spacing: 1px; }
+
+/* Quick trip cards */
+.home-quick-panel {
+  grid-column: 3 / 4; grid-row: 1 / 3;
+  border: var(--border); background: var(--panel-bg);
+  box-shadow: var(--shadow);
+}
+
+/* Upcoming trips */
+.home-upcoming { grid-column: 1 / 3; border: var(--border); background: var(--panel-bg); box-shadow: var(--shadow); }
+
+/* Mini character panel */
+.home-char-panel { grid-column: 3 / 4; border: var(--border); background: var(--panel-bg); box-shadow: var(--shadow); }
+
+/* ===== TRIP CARD ===== */
+.trip-card {
+  border: 2px solid var(--ink); background: var(--white);
+  margin: 8px; padding: 12px 14px;
+  cursor: pointer; transition: all 0.15s;
+  position: relative; display: flex; gap: 12px; align-items: center;
+}
+.trip-card:hover { background: #fff0f4; transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--pink); }
+.trip-date-box {
+  background: var(--pink); color: var(--ink);
+  padding: 6px 10px; text-align: center; flex-shrink: 0; border: 2px solid var(--ink);
+}
+.trip-date-box .m { font-size: 9px; font-weight: 900; letter-spacing: 1px; }
+.trip-date-box .d { font-family: 'Bebas Neue', sans-serif; font-size: 24px; line-height: 1; }
+.trip-card-info h3 { font-size: 14px; font-weight: 900; }
+.trip-card-info p { font-size: 11px; color: #666; margin-top: 2px; }
+.trip-card-tag {
+  margin-left: auto; background: var(--yellow); border: 1.5px solid var(--ink);
+  padding: 2px 8px; font-size: 10px; font-weight: 900;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.add-trip-btn {
+  margin: 8px; border: 2px dashed var(--pink); background: none;
+  padding: 10px; width: calc(100% - 16px);
+  cursor: pointer; font-family: 'Noto Sans TC', sans-serif;
+  font-size: 12px; font-weight: 700; color: var(--pink);
+  transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.add-trip-btn:hover { background: #fff0f4; border-style: solid; }
+
+/* ===== SEARCH PAGE ===== */
+.search-layout {
+  display: grid; grid-template-columns: 380px 1fr;
+  gap: 16px; max-width: 1200px; margin: 0 auto; height: calc(100vh - 96px);
+}
+.search-panel { display: flex; flex-direction: column; gap: 10px; }
+.map-panel { border: var(--border); box-shadow: var(--shadow); overflow: hidden; position: sticky; top: 0; }
+#map { width: 100%; height: 100%; }
+
+.manga-input {
+  width: 100%; padding: 10px 14px;
+  border: 2px solid var(--ink); background: var(--white);
+  font-family: 'Noto Sans TC', sans-serif; font-size: 13px;
+  outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+}
+.manga-input:focus { border-color: var(--pink); box-shadow: 3px 3px 0 var(--pink); }
+.manga-btn {
+  background: var(--ink); color: var(--white);
+  border: 2px solid var(--ink); padding: 10px 18px;
+  font-family: 'Noto Sans TC', sans-serif; font-size: 12px;
+  font-weight: 900; cursor: pointer; letter-spacing: 1px;
+  transition: all 0.15s; white-space: nowrap;
+}
+.manga-btn:hover { background: var(--pink); border-color: var(--pink); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--ink); }
+.manga-btn.yellow { background: var(--yellow); color: var(--ink); border-color: var(--ink); }
+.manga-btn.yellow:hover { background: #ffc700; }
+
+.filter-row { display: flex; gap: 5px; flex-wrap: wrap; }
+.filter-chip {
+  background: var(--white); border: 2px solid var(--ink);
+  padding: 4px 10px; font-size: 11px; font-weight: 700; cursor: pointer;
+  transition: all 0.15s;
+}
+.filter-chip:hover, .filter-chip.active { background: var(--pink); color: var(--ink); border-color: var(--pink); }
+
+.results-scroll { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.results-scroll::-webkit-scrollbar { width: 4px; }
+.results-scroll::-webkit-scrollbar-thumb { background: var(--pink); }
+
+.result-card {
+  border: 2px solid var(--ink); background: var(--white);
+  padding: 11px 13px; cursor: pointer; transition: all 0.15s;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.result-card:hover { background: #fff0f4; transform: translate(-2px,-2px); box-shadow: 3px 3px 0 var(--pink); }
+.result-card.selected { background: #fff0f4; border-color: var(--pink); box-shadow: 3px 3px 0 var(--pink); }
+.result-emoji { width: 40px; height: 40px; background: var(--pink); border: 2px solid var(--ink); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.result-name { font-size: 13px; font-weight: 900; margin-bottom: 2px; }
+.result-addr { font-size: 10px; color: #666; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; }
+.result-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.rtag { font-size: 9px; padding: 1px 6px; border: 1px solid var(--ink); font-weight: 700; }
+.rtag.pink { background: var(--pink); color: var(--ink); }
+.rtag.yellow { background: var(--yellow); color: var(--ink); }
+.rtag.green { background: #c8f7c5; color: #1a5c16; }
+.rtag.red { background: #ffd0d0; color: #8b0000; }
+.result-add-btn {
+  margin-left: auto; background: var(--ink); color: var(--white);
+  border: 2px solid var(--ink); padding: 4px 10px;
+  font-size: 11px; font-weight: 900; cursor: pointer;
+  flex-shrink: 0; transition: all 0.15s; align-self: center;
+}
+.result-add-btn:hover { background: var(--pink); border-color: var(--pink); }
+
+/* Place detail panel */
+.detail-panel {
+  border: 2px solid var(--pink); background: #fff5f8;
+  padding: 14px; display: none; box-shadow: var(--shadow-pink);
+}
+.detail-panel.open { display: block; }
+.detail-name { font-size: 16px; font-weight: 900; margin-bottom: 4px; }
+.detail-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.detail-badge { font-size: 10px; padding: 2px 8px; border: 1.5px solid var(--ink); font-weight: 700; }
+.detail-hours { font-size: 11px; color: #555; border-left: 3px solid var(--pink); padding-left: 8px; margin-bottom: 10px; }
+
+/* ===== SCHEDULE PAGE ===== */
+.schedule-layout { display: grid; grid-template-columns: 1fr 280px; gap: 16px; max-width: 1100px; margin: 0 auto; }
+
+.trip-selector { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.trip-sel-btn {
+  background: var(--white); border: 2px solid var(--ink);
+  padding: 5px 14px; font-size: 12px; font-weight: 900;
+  cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 5px;
+}
+.trip-sel-btn:hover, .trip-sel-btn.active { background: var(--pink); border-color: var(--pink); }
+.trip-sel-btn .sel-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pink); border: 1px solid var(--ink); }
+.trip-sel-btn.active .sel-dot { background: var(--ink); }
+
+/* Optimal route banner */
+.optimal-banner {
+  border: 2px solid var(--yellow); background: #fffbe6;
+  padding: 10px 14px; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 3px 3px 0 var(--yellow);
+}
+.optimal-banner .icon { font-size: 20px; }
+.optimal-banner .text { font-size: 11px; font-weight: 700; }
+.optimal-banner .text span { color: var(--pink); }
+.calc-btn {
+  margin-left: auto; background: var(--yellow); border: 2px solid var(--ink);
+  padding: 5px 12px; font-size: 11px; font-weight: 900; cursor: pointer;
+  transition: all 0.15s;
+}
+.calc-btn:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var(--ink); }
+
+/* Day tabs */
+.day-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+.day-tab {
+  background: var(--white); border: 2px solid var(--ink); padding: 4px 12px;
+  font-size: 11px; font-weight: 900; cursor: pointer; transition: all 0.15s;
+}
+.day-tab.active { background: var(--ink); color: var(--pink); }
+.day-tab:hover { background: #eee; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 28px; }
+.timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background:linear-gradient(to bottom,var(--pink),var(--ink),transparent); }
+
+.tl-item { position: relative; margin-bottom: 10px; }
+.tl-item::before { content:''; position:absolute; left:-24px; top:16px; width:10px; height:10px; background:var(--pink); border:2px solid var(--ink); }
+.tl-card {
+  border: 2px solid var(--ink); background: var(--white);
+  padding: 10px 12px; display: flex; gap: 10px; align-items: flex-start;
+  transition: all 0.15s; cursor: default;
+}
+.tl-card:hover { background: #fff5f8; box-shadow: 2px 2px 0 var(--pink); }
+.tl-time { font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--pink); min-width:40px; padding-top:1px; flex-shrink:0; }
+.tl-icon { font-size:18px; flex-shrink:0; }
+.tl-content { flex:1; min-width:0; }
+.tl-content h3 { font-size:13px; font-weight:900; margin-bottom:2px; }
+.tl-content p { font-size:10px; color:#666; margin-bottom:4px; }
+.tl-tags { display:flex; gap:4px; flex-wrap:wrap; }
+.tl-tag { font-size:9px; padding:1px 6px; border:1px solid var(--ink); font-weight:700; }
+.tl-tag.transport { background:#c8f7c5; }
+.tl-tag.cost { background:var(--yellow); }
+.tl-actions { display:flex; flex-direction:column; gap:3px; flex-shrink:0; }
+.tl-del { background:none; border:1.5px solid #ddd; width:26px; height:26px; cursor:pointer; font-size:12px; transition:all 0.15s; }
+.tl-del:hover { border-color:var(--red); background:#fff0f0; }
+.tl-edit { background:none; border:1.5px solid #ddd; width:26px; height:26px; cursor:pointer; font-size:12px; transition:all 0.15s; }
+.tl-edit:hover { border-color:var(--pink); background:#fff0f4; }
+
+.add-tl-btn {
+  border: 2px dashed var(--pink); background: none; padding: 8px;
+  width: 100%; cursor: pointer; font-family:'Noto Sans TC',sans-serif;
+  font-size: 12px; font-weight: 700; color: var(--pink);
+  transition: all 0.15s; margin-top: 6px;
+}
+.add-tl-btn:hover { background: #fff0f4; border-style: solid; }
+
+/* Transport panel */
+.transport-section { margin-bottom: 12px; }
+.ts-title { background: var(--ink); color: var(--pink); padding: 5px 12px; font-size: 12px; font-weight: 900; letter-spacing: 1px; margin-bottom: 6px; }
+.transport-opt {
+  border: 2px solid var(--ink); background: var(--white);
+  padding: 8px 10px; margin-bottom: 5px; cursor: pointer;
+  display: flex; align-items: center; gap: 8px; transition: all 0.15s;
+}
+.transport-opt:hover { background: #fff0f4; }
+.transport-opt.selected { background: #fff0f4; border-color: var(--pink); box-shadow: 2px 2px 0 var(--pink); }
+.to-icon { font-size:16px; }
+.to-info { flex:1; }
+.to-name { font-size:12px; font-weight:900; }
+.to-detail { font-size:10px; color:#666; }
+.to-price { font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--pink); }
+
+/* ===== BUDGET PAGE ===== */
+.budget-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 1000px; margin: 0 auto; }
+
+.budget-total-panel {
+  grid-column: 1 / 3;
+  border: var(--border); background: var(--ink);
+  box-shadow: var(--shadow-pink); padding: 20px 24px;
+  display: flex; align-items: center; gap: 32px;
+  position: relative; overflow: hidden;
+}
+.budget-total-panel::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(255,107,157,0.08) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+.budget-big-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 64px; color: var(--yellow);
+  text-shadow: 3px 3px 0 var(--pink); line-height: 1;
+  position: relative;
+}
+.budget-big-num::before { content:'NT$'; font-size:18px; position:absolute; top:8px; left:-36px; color:var(--pink); }
+.budget-meta { color: var(--white); position:relative; }
+.budget-meta h3 { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--pink); letter-spacing:3px; }
+.budget-meta p { font-size:12px; opacity:0.7; margin-top:4px; }
+.budget-per { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--cyan); margin-left:auto; position:relative; }
+.budget-per span { font-size:12px; display:block; color:var(--white); opacity:0.7; }
+
+/* Budget category */
+.budget-cat-panel { border: var(--border); background: var(--panel-bg); box-shadow: var(--shadow); }
+.budget-item {
+  border-bottom: 1px solid #e0d8cc; padding: 10px 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.budget-item:last-child { border-bottom: none; }
+.bi-icon { font-size: 18px; width: 32px; text-align: center; }
+.bi-label { flex: 1; font-size: 13px; font-weight: 700; }
+.bi-sub { font-size: 10px; color: #888; }
+.bi-amount { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--ink); }
+.bi-edit { background:none; border:1.5px solid #ddd; padding:3px 8px; font-size:11px; cursor:pointer; transition:all 0.15s; }
+.bi-edit:hover { border-color:var(--pink); background:#fff0f4; }
+
+/* Add budget btn */
+.add-budget-btn {
+  margin: 10px 14px; border: 2px dashed var(--pink); background: none;
+  padding: 8px; width: calc(100% - 28px);
+  cursor: pointer; font-size: 12px; font-weight: 700;
+  color: var(--pink); transition: all 0.15s;
+}
+.add-budget-btn:hover { background: #fff0f4; border-style: solid; }
+
+/* Bar chart */
+.budget-bar-panel { border: var(--border); background: var(--panel-bg); box-shadow: var(--shadow); }
+.budget-bar { margin: 8px 14px; }
+.budget-bar-label { display:flex; justify-content:space-between; font-size:11px; font-weight:700; margin-bottom:3px; }
+.budget-bar-track { height:16px; background:#e0d8cc; border:1px solid var(--ink); position:relative; }
+.budget-bar-fill { height:100%; transition:width 0.5s; position:relative; }
+.budget-bar-fill::after { content:attr(data-pct); position:absolute; right:4px; top:50%; transform:translateY(-50%); font-size:9px; font-weight:900; color:var(--ink); }
+
+/* ===== PLACES PAGE ===== */
+.places-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; max-width:1100px; margin:0 auto; }
+.memory-card { border:var(--border); background:var(--white); box-shadow:var(--shadow); cursor:pointer; transition:all 0.15s; overflow:hidden; }
+.memory-card:hover { transform:translate(-3px,-3px); box-shadow:6px 6px 0 var(--pink); }
+.memory-img { height:110px; background:linear-gradient(135deg,#ff6b9d,#ffd93d); display:flex; align-items:center; justify-content:center; font-size:42px; position:relative; border-bottom:var(--border); }
+.memory-badge { position:absolute; top:6px; right:6px; background:var(--ink); color:var(--pink); font-size:9px; font-weight:900; padding:2px 6px; border:1px solid var(--pink); }
+.memory-body { padding:10px; }
+.memory-name { font-size:13px; font-weight:900; margin-bottom:2px; }
+.memory-date { font-size:10px; color:#888; margin-bottom:5px; }
+.memory-stars { color:var(--yellow); font-size:12px; }
+
+/* ===== MODAL ===== */
+.modal-overlay { display:none; position:fixed; inset:0; z-index:200; background:rgba(26,26,46,0.75); align-items:center; justify-content:center; backdrop-filter:blur(3px); }
+.modal-overlay.open { display:flex; }
+.modal-box {
+  background:var(--white); border:var(--border); box-shadow:8px 8px 0 var(--pink);
+  padding:24px; width:90%; max-width:460px; max-height:90vh; overflow-y:auto;
+  animation:panelIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.modal-box::-webkit-scrollbar { width:4px; }
+.modal-box::-webkit-scrollbar-thumb { background:var(--pink); }
+@keyframes panelIn { from{transform:scale(0.8) rotate(-3deg);opacity:0} to{transform:scale(1) rotate(0deg);opacity:1} }
+.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; padding-bottom:10px; border-bottom:2px solid var(--ink); }
+.modal-title { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:3px; color:var(--ink); }
+.modal-close { background:none; border:2px solid var(--ink); width:30px; height:30px; cursor:pointer; font-size:14px; transition:all 0.15s; }
+.modal-close:hover { background:var(--pink); }
+
+.form-group { margin-bottom:12px; }
+.form-label { display:block; font-size:10px; font-weight:900; letter-spacing:2px; color:#888; text-transform:uppercase; margin-bottom:4px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+/* ===== TOAST ===== */
+.toast {
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(80px);
+  background:var(--ink); color:var(--white);
+  padding:10px 22px; border:2px solid var(--pink);
+  font-size:12px; font-weight:700; letter-spacing:1px;
+  z-index:500; transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow:4px 4px 0 var(--pink); white-space:nowrap;
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+/* FAB */
+.fab {
+  position:fixed; bottom:24px; right:22px; z-index:100;
+  width:52px; height:52px; background:var(--pink); color:var(--ink);
+  border:3px solid var(--ink); font-size:24px; font-weight:900;
+  cursor:pointer; box-shadow:4px 4px 0 var(--ink); transition:all 0.15s;
+  display:flex; align-items:center; justify-content:center;
+}
+.fab:hover { transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--ink); background:var(--yellow); }
+
+/* SFX popup labels */
+.sfx-label {
+  position:absolute; font-family:'Bebas Neue',sans-serif;
+  color:var(--pink); font-size:13px; letter-spacing:2px;
+  opacity:0.5; pointer-events:none; transform:rotate(-15deg);
+}
+
+/* Manga sparkle decorations */
+.manga-sparkle { font-size:14px; color:var(--pink); display:inline-block; animation:sparkPop 2s ease-in-out infinite; }
+@keyframes sparkPop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3) rotate(20deg)} }
+
+/* Loading spinner */
+.spin-icon { display:inline-block; animation:spin360 0.8s linear infinite; }
+@keyframes spin360 { to{transform:rotate(360deg)} }
+
+/* Inline map for modal */
+#modalMap { width:100%; height:180px; border:2px solid var(--ink); }
+
+/* Optimal route highlight */
+.tl-item.optimal .tl-card { border-color:var(--yellow); background:#fffbe6; }
+.tl-item.optimal::before { background:var(--yellow); }
+
+/* User indicator dot */
+.user-dot { width:8px; height:8px; border-radius:50%; display:inline-block; border:1.5px solid var(--ink); }
+.user-dot.weiwun { background:var(--cyan); }
+.user-dot.mimi { background:var(--pink); }
+.edit-by { font-size:9px; color:#aaa; margin-left:auto; padding-right:4px; }
+
+/* Shared indicator */
+.shared-badge {
+  background:var(--green); border:1.5px solid var(--ink);
+  padding:2px 8px; font-size:9px; font-weight:900; color:var(--ink);
+  display:inline-flex; align-items:center; gap:4px;
+}
+.shared-badge::before { content:'●'; color:var(--ink); font-size:8px; }
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px) {
+  .search-layout { grid-template-columns:1fr; }
+  .schedule-layout { grid-template-columns:1fr; }
+  .budget-layout { grid-template-columns:1fr; }
+  .budget-total-panel { grid-column:1; flex-direction:column; gap:12px; }
+  .home-grid { grid-template-columns:1fr; }
+  .home-hero-panel { grid-column:1; }
+  .home-quick-panel { grid-column:1; grid-row:auto; }
+  .home-upcoming { grid-column:1; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-logo">WE <span>TRAVEL</span></div>
+  <nav class="header-nav">
+    <button class="nav-tab active" onclick="showPage('home')" id="nav-home">🏠 首頁</button>
+    <button class="nav-tab" onclick="showPage('search')" id="nav-search">🗺 搜尋</button>
+    <button class="nav-tab" onclick="showPage('schedule')" id="nav-schedule">📅 行程</button>
+    <button class="nav-tab" onclick="showPage('budget')" id="nav-budget">💰 預算</button>
+    <button class="nav-tab" onclick="showPage('places')" id="nav-places">💕 足跡</button>
+  </nav>
+  <div class="header-user">
+    <span class="shared-badge">共享中</span>
+    <div class="user-badge" id="userBadge" onclick="switchUser()">韋彣 ▾</div>
+  </div>
+</header>
+
+<div class="app-body">
+
+<!-- ===== HOME PAGE ===== -->
+<div class="page active" id="page-home">
+  <div class="home-grid">
+    <!-- Hero -->
+    <div class="home-hero-panel manga-panel">
+      <div class="sfx-label" style="top:8px;right:16px;">ADVENTURE!</div>
+      <div class="big-title">OUR TRIPS</div>
+      <div class="sub">✦ 韋彣 & 芊樺的旅行日誌 ✦</div>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="num" id="stat-trips">3</span><span class="lbl">TRIPS</span></div>
+        <div class="hero-stat"><span class="num" id="stat-places">12</span><span class="lbl">SPOTS</span></div>
+        <div class="hero-stat"><span class="num" id="stat-days">7</span><span class="lbl">DAYS</span></div>
+        <div class="hero-stat"><span class="num">2</span><span class="lbl">PEOPLE</span></div>
+      </div>
+    </div>
+
+    <!-- Quick actions panel -->
+    <div class="home-quick-panel manga-panel">
+      <div class="manga-panel-title">⚡ <span class="accent">QUICK</span> START</div>
+      <div style="padding:6px;">
+        <div class="trip-card" onclick="showPage('search')" style="margin-bottom:6px;">
+          <div style="font-size:24px;">🗺</div>
+          <div class="trip-card-info"><h3>搜尋地點</h3><p>Google Maps 真實店家</p></div>
+        </div>
+        <div class="trip-card" onclick="openModal('addTripModal')" style="margin-bottom:6px;">
+          <div style="font-size:24px;">✈️</div>
+          <div class="trip-card-info"><h3>新增旅行</h3><p>建立新的旅行計畫</p></div>
+        </div>
+        <div class="trip-card" onclick="showPage('schedule')" style="margin-bottom:6px;">
+          <div style="font-size:24px;">📅</div>
+          <div class="trip-card-info"><h3>最佳排程</h3><p>自動計算最優行程</p></div>
+        </div>
+        <div class="trip-card" onclick="showPage('budget')">
+          <div style="font-size:24px;">💰</div>
+          <div class="trip-card-info"><h3>預算規劃</h3><p>費用加總與分攤</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming -->
+    <div class="home-upcoming manga-panel">
+      <div class="manga-panel-title">🗓 即將出發 <span class="accent">UPCOMING</span></div>
+      <div id="upcomingList">
+        <div class="trip-card" onclick="showPage('schedule')">
+          <div class="trip-date-box"><div class="m">MAR</div><div class="d">22</div></div>
+          <div class="trip-card-info"><h3>🏮 台南古都慢旅</h3><p>赤崁樓 · 神農街 · 安平豆花</p></div>
+          <div class="trip-card-tag">2天1夜</div>
+        </div>
+        <div class="trip-card" onclick="showPage('schedule')">
+          <div class="trip-date-box"><div class="m">APR</div><div class="d">05</div></div>
+          <div class="trip-card-info"><h3>🌊 東海岸花蓮行</h3><p>太魯閣 · 七星潭 · 洄瀾夜市</p></div>
+          <div class="trip-card-tag">3天2夜</div>
+        </div>
+      </div>
+      <button class="add-trip-btn" onclick="openModal('addTripModal')">＋ 新增旅行計畫</button>
+    </div>
+
+    <!-- Mini character deco -->
+    <div class="home-char-panel manga-panel">
+      <div class="manga-panel-title">💌 <span class="accent">TODAY</span></div>
+      <div style="padding:12px;text-align:center;">
+        <div style="font-size:48px;margin-bottom:8px;" id="homeCharEmoji">🌸</div>
+        <div style="font-size:13px;font-weight:900;margin-bottom:6px;" id="homeGreet">今天是韋彣在規劃！</div>
+        <div style="font-size:11px;color:#888;line-height:1.6;">每一次旅行<br>都是寫給彼此的情書 ♥</div>
+        <!-- Mini manga panel illustration -->
+        <div style="margin-top:12px;border:2px solid var(--ink);padding:10px;background:#fff5f8;position:relative;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:2px;color:var(--pink);margin-bottom:6px;">LOVE MAP</div>
+          <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
+            <span style="font-size:18px;">🗺️</span>
+            <span style="font-size:18px;">🚄</span>
+            <span style="font-size:18px;">☕</span>
+            <span style="font-size:18px;">🌸</span>
+            <span style="font-size:18px;">🌙</span>
+          </div>
+          <div class="sfx-label" style="bottom:2px;right:4px;font-size:10px;">ZOOM!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SEARCH PAGE ===== -->
+<div class="page" id="page-search">
+  <div class="search-layout">
+    <div class="search-panel">
+      <div class="manga-panel" style="padding:12px;">
+        <div class="manga-panel-title" style="margin:-12px -12px 12px;">🔍 <span class="accent">SEARCH</span> PLACES</div>
+        <div style="display:flex;gap:6px;margin-bottom:8px;">
+          <input type="text" class="manga-input" id="searchInput" placeholder="搜尋餐廳、景點、咖啡廳..." onkeydown="if(event.key==='Enter')doSearch()" style="flex:1;">
+          <button class="manga-btn" onclick="doSearch()">GO!</button>
+        </div>
+        <div class="filter-row">
+          <div class="filter-chip active" onclick="setFilter('',this)">全部</div>
+          <div class="filter-chip" onclick="setFilter('restaurant',this)">🍜餐廳</div>
+          <div class="filter-chip" onclick="setFilter('cafe',this)">☕咖啡</div>
+          <div class="filter-chip" onclick="setFilter('tourist_attraction',this)">🏛景點</div>
+          <div class="filter-chip" onclick="setFilter('lodging',this)">🏨住宿</div>
+          <div class="filter-chip" onclick="setFilter('park',this)">🌿公園</div>
+          <div class="filter-chip" onclick="setFilter('bar',this)">🌙夜生活</div>
+        </div>
+      </div>
+
+      <div class="detail-panel" id="detailPanel">
+        <div class="detail-name" id="detailName"></div>
+        <div style="font-size:11px;color:#666;margin-bottom:8px;" id="detailAddr"></div>
+        <div class="detail-meta" id="detailMeta"></div>
+        <div class="detail-hours" id="detailHours"></div>
+        <div style="display:flex;gap:6px;">
+          <button class="manga-btn" style="flex:1;padding:8px;" onclick="addSelectedPlace()">＋ 加入行程</button>
+          <button class="manga-btn yellow" style="padding:8px;" onclick="addToWishlist()">♡ 收藏</button>
+        </div>
+      </div>
+
+      <div id="searchLoadingEl" style="display:none;text-align:center;padding:20px;font-weight:900;font-size:13px;letter-spacing:2px;">
+        <span class="spin-icon">⭐</span> 搜尋中...
+      </div>
+
+      <div class="results-scroll" id="searchResults" style="flex:1;"></div>
+    </div>
+
+    <!-- Map -->
+    <div class="map-panel">
+      <div id="map" style="width:100%;height:100%;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCHEDULE PAGE ===== -->
+<div class="page" id="page-schedule">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="trip-selector" id="tripSelector">
+      <div class="trip-sel-btn active" onclick="selectTrip(this,'tainan')"><span class="sel-dot"></span>🏮 台南古都</div>
+      <div class="trip-sel-btn" onclick="selectTrip(this,'hualien')"><span class="sel-dot"></span>🌊 花蓮東海岸</div>
+      <button class="manga-btn" style="padding:5px 12px;font-size:11px;" onclick="openModal('addTripModal')">＋ 新增旅行</button>
+    </div>
+
+    <div class="optimal-banner">
+      <div class="icon">⚡</div>
+      <div class="text">最佳排程建議：<span>高鐵 08:30 出發 → 台南站 10:10</span>，步行至赤崁樓效率最高</div>
+      <button class="calc-btn" onclick="calcOptimal()">重新計算 ▶</button>
+    </div>
+
+    <div class="schedule-layout">
+      <div>
+        <!-- Day tabs -->
+        <div class="day-tabs" id="dayTabs">
+          <div class="day-tab active" onclick="selectDay(this,1)">Day 1</div>
+          <div class="day-tab" onclick="selectDay(this,2)">Day 2</div>
+          <button style="background:none;border:2px dashed #ccc;padding:3px 10px;font-size:11px;cursor:pointer;font-weight:700;" onclick="addDay()">＋ 天</button>
+        </div>
+
+        <div style="font-size:11px;color:#888;margin-bottom:10px;" id="dayDateLabel">2025年3月22日（六）</div>
+
+        <div class="manga-panel" style="padding:12px;">
+          <div class="manga-panel-title" style="margin:-12px -12px 12px;">📅 DAY <span class="accent" id="dayNum">1</span> 行程</div>
+          <div class="timeline" id="timeline">
+            <div class="tl-item optimal">
+              <div class="tl-card">
+                <div class="tl-time">08:30</div>
+                <div class="tl-icon">🚄</div>
+                <div class="tl-content">
+                  <h3>台北→台南（高鐵）</h3>
+                  <p>台北站 → 台南站 直達</p>
+                  <div class="tl-tags">
+                    <span class="tl-tag transport">高鐵 1hr40min</span>
+                    <span class="tl-tag cost">NT$1,350/人</span>
+                    <span class="tl-tag" style="background:#ffd0f0;">⭐ 最佳時段</span>
+                  </div>
+                </div>
+                <span class="edit-by"><span class="user-dot weiwun"></span> 韋彣</span>
+                <div class="tl-actions">
+                  <button class="tl-edit" onclick="editItem(this)">✏</button>
+                  <button class="tl-del" onclick="delItem(this)">✕</button>
+                </div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-card">
+                <div class="tl-time">10:30</div>
+                <div class="tl-icon">🏮</div>
+                <div class="tl-content">
+                  <h3>赤崁樓</h3>
+                  <p>台南市中西區民族路二段212號</p>
+                  <div class="tl-tags">
+                    <span class="tl-tag cost">⏱ 1.5小時</span>
+                    <span class="tl-tag" style="background:#ffd93d;">🎫 NT$50</span>
+                    <span class="tl-tag" style="background:#ffd93d;">⭐ 4.6</span>
+                  </div>
+                </div>
+                <span class="edit-by"><span class="user-dot mimi"></span> 米米</span>
+                <div class="tl-actions">
+                  <button class="tl-edit" onclick="editItem(this)">✏</button>
+                  <button class="tl-del" onclick="delItem(this)">✕</button>
+                </div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-card">
+                <div class="tl-time">12:30</div>
+                <div class="tl-icon">🍜</div>
+                <div class="tl-content">
+                  <h3>度小月擔仔麵（原始店）</h3>
+                  <p>台南市中西區中正路165號</p>
+                  <div class="tl-tags">
+                    <span class="tl-tag cost">⏱ 1小時</span>
+                    <span class="tl-tag cost">💰 ~NT$300</span>
+                  </div>
+                </div>
+                <span class="edit-by"><span class="user-dot weiwun"></span> 韋彣</span>
+                <div class="tl-actions">
+                  <button class="tl-edit" onclick="editItem(this)">✏</button>
+                  <button class="tl-del" onclick="delItem(this)">✕</button>
+                </div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-card">
+                <div class="tl-time">14:00</div>
+                <div class="tl-icon">🚲</div>
+                <div class="tl-content">
+                  <h3>YouBike 騎到神農街</h3>
+                  <p>擔仔麵 → 神農街，約 0.8km</p>
+                  <div class="tl-tags">
+                    <span class="tl-tag transport">YouBike 8分鐘</span>
+                    <span class="tl-tag cost">NT$15</span>
+                  </div>
+                </div>
+                <div class="tl-actions">
+                  <button class="tl-edit" onclick="editItem(this)">✏</button>
+                  <button class="tl-del" onclick="delItem(this)">✕</button>
+                </div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-card">
+                <div class="tl-time">19:30</div>
+                <div class="tl-icon">🌙</div>
+                <div class="tl-content">
+                  <h3>花園夜市</h3>
+                  <p>台南市北區海安路三段（週四/六/日）</p>
+                  <div class="tl-tags">
+                    <span class="tl-tag cost">⏱ 2小時</span>
+                    <span class="tl-tag cost">💰 ~NT$400</span>
+                  </div>
+                </div>
+                <div class="tl-actions">
+                  <button class="tl-edit" onclick="editItem(this)">✏</button>
+                  <button class="tl-del" onclick="delItem(this)">✕</button>
+                </div>
+              </div>
+            </div>
+            <button class="add-tl-btn" onclick="openModal('addItemModal')">＋ 新增行程項目</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transport & summary -->
+      <div>
+        <div class="manga-panel" style="margin-bottom:14px;">
+          <div class="manga-panel-title">🚄 交通方式</div>
+          <div style="padding:10px;">
+            <div class="transport-section">
+              <div class="ts-title">台北 → 台南</div>
+              <div class="transport-opt selected" onclick="selTransport(this)">
+                <div class="to-icon">🚄</div>
+                <div class="to-info"><div class="to-name">台灣高鐵</div><div class="to-detail">1h40m · 直達 · 可加價對號</div></div>
+                <div class="to-price">$1,350</div>
+              </div>
+              <div class="transport-opt" onclick="selTransport(this)">
+                <div class="to-icon">🚂</div>
+                <div class="to-info"><div class="to-name">台鐵自強號</div><div class="to-detail">3h30m · 需轉乘</div></div>
+                <div class="to-price">$843</div>
+              </div>
+              <div class="transport-opt" onclick="selTransport(this)">
+                <div class="to-icon">🚌</div>
+                <div class="to-info"><div class="to-name">客運（統聯/和欣）</div><div class="to-detail">4h · 夜班可訂</div></div>
+                <div class="to-price">$350</div>
+              </div>
+              <button class="add-trip-btn" style="margin:6px 0 0;width:100%;" onclick="openModal('addTransportModal')">＋ 新增交通方式</button>
+            </div>
+            <div class="transport-section">
+              <div class="ts-title">當地交通</div>
+              <div class="transport-opt selected" onclick="selTransport(this)">
+                <div class="to-icon">🚲</div>
+                <div class="to-info"><div class="to-name">YouBike 2.0</div><div class="to-detail">前30分免費（悠遊卡）</div></div>
+                <div class="to-price">$15起</div>
+              </div>
+              <div class="transport-opt" onclick="selTransport(this)">
+                <div class="to-icon">🚌</div>
+                <div class="to-info"><div class="to-name">台南公車</div><div class="to-detail">18號、88路</div></div>
+                <div class="to-price">$18</div>
+              </div>
+              <div class="transport-opt" onclick="selTransport(this)">
+                <div class="to-icon">🚕</div>
+                <div class="to-info"><div class="to-name">Uber / 台灣大車隊</div><div class="to-detail">雨天備案</div></div>
+                <div class="to-price">$100起</div>
+              </div>
+              <button class="add-trip-btn" style="margin:6px 0 0;width:100%;" onclick="openModal('addTransportModal')">＋ 新增交通方式</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Day cost summary -->
+        <div class="manga-panel">
+          <div class="manga-panel-title">📊 <span class="accent">DAY 1</span> 費用</div>
+          <div style="padding:10px;">
+            <div style="border-bottom:1px solid #e0d8cc;padding:6px 0;display:flex;justify-content:space-between;font-size:12px;">
+              <span>🚄 交通（來回高鐵）</span><span style="font-weight:900;">$2,700</span>
+            </div>
+            <div style="border-bottom:1px solid #e0d8cc;padding:6px 0;display:flex;justify-content:space-between;font-size:12px;">
+              <span>🍜 餐飲</span><span style="font-weight:900;">$600</span>
+            </div>
+            <div style="border-bottom:1px solid #e0d8cc;padding:6px 0;display:flex;justify-content:space-between;font-size:12px;">
+              <span>🎫 門票</span><span style="font-weight:900;">$100</span>
+            </div>
+            <div style="border-bottom:1px solid #e0d8cc;padding:6px 0;display:flex;justify-content:space-between;font-size:12px;">
+              <span>🚲 當地交通</span><span style="font-weight:900;">$50</span>
+            </div>
+            <div style="padding:8px 0;display:flex;justify-content:space-between;">
+              <span style="font-weight:900;">Day 1 小計</span>
+              <span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--pink);">$3,450</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BUDGET PAGE ===== -->
+<div class="page" id="page-budget">
+  <div class="budget-layout">
+    <!-- Total banner -->
+    <div class="budget-total-panel manga-panel">
+      <div style="position:relative;">
+        <div class="budget-big-num" id="budgetTotal">8,800</div>
+      </div>
+      <div class="budget-meta">
+        <h3>TOTAL BUDGET</h3>
+        <p>台南古都慢旅 · 2天1夜</p>
+        <p style="margin-top:6px;">👥 2人同行</p>
+        <div style="margin-top:8px;display:flex;gap:6px;">
+          <span class="user-dot weiwun" style="width:10px;height:10px;"></span> 韋彣
+          <span class="user-dot mimi" style="width:10px;height:10px;margin-left:6px;"></span> 芊樺
+        </div>
+      </div>
+      <div class="budget-per" style="position:relative;">
+        <span>每人分攤</span>
+        NT$<span id="budgetPer">4,400</span>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="budget-cat-panel manga-panel">
+      <div class="manga-panel-title">💰 <span class="accent">EXPENSES</span></div>
+      <div id="budgetItems">
+        <div class="budget-item" data-amount="5400">
+          <div class="bi-icon">🚄</div>
+          <div style="flex:1;"><div class="bi-label">交通費</div><div class="bi-sub">高鐵來回 × 2人</div></div>
+          <div class="bi-amount" style="font-family:'Bebas Neue',sans-serif;font-size:20px;">$5,400</div>
+          <button class="bi-edit" onclick="editBudgetItem(this, '交通費')">✏</button>
+        </div>
+        <div class="budget-item" data-amount="1800">
+          <div class="bi-icon">🏨</div>
+          <div style="flex:1;"><div class="bi-label">住宿</div><div class="bi-sub">1晚 · 台南民宿</div></div>
+          <div class="bi-amount" style="font-family:'Bebas Neue',sans-serif;font-size:20px;">$1,800</div>
+          <button class="bi-edit" onclick="editBudgetItem(this, '住宿')">✏</button>
+        </div>
+        <div class="budget-item" data-amount="1200">
+          <div class="bi-icon">🍜</div>
+          <div style="flex:1;"><div class="bi-label">餐飲</div><div class="bi-sub">三餐 + 點心 × 2人</div></div>
+          <div class="bi-amount" style="font-family:'Bebas Neue',sans-serif;font-size:20px;">$1,200</div>
+          <button class="bi-edit" onclick="editBudgetItem(this, '餐飲')">✏</button>
+        </div>
+        <div class="budget-item" data-amount="200">
+          <div class="bi-icon">🎫</div>
+          <div style="flex:1;"><div class="bi-label">門票</div><div class="bi-sub">赤崁樓 × 2人</div></div>
+          <div class="bi-amount" style="font-family:'Bebas Neue',sans-serif;font-size:20px;">$200</div>
+          <button class="bi-edit" onclick="editBudgetItem(this, '門票')">✏</button>
+        </div>
+        <div class="budget-item" data-amount="200">
+          <div class="bi-icon">🚲</div>
+          <div style="flex:1;"><div class="bi-label">當地交通</div><div class="bi-sub">YouBike + 公車</div></div>
+          <div class="bi-amount" style="font-family:'Bebas Neue',sans-serif;font-size:20px;">$200</div>
+          <button class="bi-edit" onclick="editBudgetItem(this, '當地交通')">✏</button>
+        </div>
+      </div>
+      <button class="add-budget-btn" onclick="openModal('addBudgetModal')">＋ 新增費用項目</button>
+    </div>
+
+    <!-- Bar chart -->
+    <div class="budget-bar-panel manga-panel">
+      <div class="manga-panel-title">📊 <span class="accent">BREAKDOWN</span></div>
+      <div style="padding:14px;" id="budgetBars">
+        <div class="budget-bar">
+          <div class="budget-bar-label"><span>🚄 交通費</span><span>$5,400</span></div>
+          <div class="budget-bar-track"><div class="budget-bar-fill" data-pct="61%" style="width:61%;background:var(--pink);"></div></div>
+        </div>
+        <div class="budget-bar" style="margin-top:10px;">
+          <div class="budget-bar-label"><span>🏨 住宿</span><span>$1,800</span></div>
+          <div class="budget-bar-track"><div class="budget-bar-fill" data-pct="20%" style="width:20%;background:var(--cyan);"></div></div>
+        </div>
+        <div class="budget-bar" style="margin-top:10px;">
+          <div class="budget-bar-label"><span>🍜 餐飲</span><span>$1,200</span></div>
+          <div class="budget-bar-track"><div class="budget-bar-fill" data-pct="14%" style="width:14%;background:var(--yellow);"></div></div>
+        </div>
+        <div class="budget-bar" style="margin-top:10px;">
+          <div class="budget-bar-label"><span>🎫 其他</span><span>$400</span></div>
+          <div class="budget-bar-track"><div class="budget-bar-fill" data-pct="5%" style="width:5%;background:var(--green);"></div></div>
+        </div>
+        <div style="margin-top:16px;border-top:2px solid var(--ink);padding-top:12px;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--pink);margin-bottom:8px;">預算備忘</div>
+          <div style="font-size:11px;color:#666;line-height:1.8;">
+            ☑ 高鐵建議提早訂（早鳥優惠）<br>
+            ☑ 悠遊卡記得加值 $500<br>
+            ☑ 備用金預留 $500/人<br>
+            ☑ 花園夜市最好帶現金
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PLACES PAGE ===== -->
+<div class="page" id="page-places">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+      <div class="filter-chip active">全部足跡</div>
+      <div class="filter-chip">❤️ 最愛</div>
+      <div class="filter-chip">🔁 還想再去</div>
+      <div class="filter-chip">📸 有照片</div>
+    </div>
+    <div class="places-grid" id="placesGrid"></div>
+  </div>
+</div>
+
+</div><!-- end app-body -->
+
+<button class="fab" onclick="openModal('addItemModal')">＋</button>
+
+<!-- ===== MODALS ===== -->
+
+<!-- Add Trip Modal -->
+<div class="modal-overlay" id="addTripModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">✈️ NEW TRIP</div>
+      <button class="modal-close" onclick="closeModal('addTripModal')">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">旅行名稱</label><input type="text" class="manga-input" id="tripName" placeholder="例：米米的初雪北海道之旅 🌸"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">出發日期</label><input type="date" class="manga-input" id="tripStart"></div>
+      <div class="form-group"><label class="form-label">返回日期</label><input type="date" class="manga-input" id="tripEnd"></div>
+    </div>
+    <div class="form-group"><label class="form-label">目的地</label><input type="text" class="manga-input" id="tripDest" placeholder="台南、花蓮、日本..."></div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">旅行主題</label>
+        <select class="manga-input" id="tripTheme">
+          <option>🍜 吃貨之旅</option><option>🌿 自然探索</option><option>🏛 文化之旅</option>
+          <option>🏖 海邊度假</option><option>🌸 賞花之旅</option><option>💕 情侶約會</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">預算上限 (NT$)</label>
+        <input type="number" class="manga-input" id="tripBudget" placeholder="10000">
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">備忘</label><textarea class="manga-input" rows="2" id="tripNote" placeholder="想去的地方、注意事項..."></textarea></div>
+    <button class="manga-btn" style="width:100%;padding:12px;" onclick="addTrip()">🌸 建立旅行計畫</button>
+  </div>
+</div>
+
+<!-- Add Item Modal -->
+<div class="modal-overlay" id="addItemModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">📍 ADD ITEM</div>
+      <button class="modal-close" onclick="closeModal('addItemModal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">搜尋地點</label>
+      <input type="text" id="itemSearchInput" class="manga-input" placeholder="輸入地點名稱...">
+    </div>
+    <div id="modalMap" style="height:160px;border:2px solid var(--ink);margin-bottom:12px;"></div>
+    <div id="itemSelectedInfo" style="display:none;background:#fff0f4;border:1.5px solid var(--pink);padding:8px;margin-bottom:10px;font-size:12px;font-weight:700;"></div>
+    <div class="form-group"><label class="form-label">地點名稱</label><input type="text" class="manga-input" id="itemName" placeholder="地點名稱"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">時間</label><input type="time" class="manga-input" id="itemTime"></div>
+      <div class="form-group"><label class="form-label">停留時間</label><input type="text" class="manga-input" id="itemDur" placeholder="1.5小時"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">類別</label>
+        <select class="manga-input" id="itemCat">
+          <option value="🍜">🍜 美食</option><option value="☕">☕ 咖啡廳</option><option value="🏮">🏮 景點</option>
+          <option value="🌿">🌿 自然</option><option value="🌙">🌙 夜市</option><option value="🏨">🏨 住宿</option>
+          <option value="🚄">🚄 交通</option><option value="🛍">🛍 購物</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">預估費用 (NT$)</label><input type="number" class="manga-input" id="itemCost" placeholder="0"></div>
+    </div>
+    <div class="form-group"><label class="form-label">備忘</label><textarea class="manga-input" rows="2" id="itemNote" placeholder="給彼此的小提醒..."></textarea></div>
+    <button class="manga-btn" style="width:100%;padding:12px;" onclick="addItemToTimeline()">🌸 加入行程</button>
+  </div>
+</div>
+
+<!-- Add Transport Modal -->
+<div class="modal-overlay" id="addTransportModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">🚄 ADD TRANSPORT</div>
+      <button class="modal-close" onclick="closeModal('addTransportModal')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">出發地</label><input type="text" class="manga-input" id="transFrom" placeholder="台北"></div>
+      <div class="form-group"><label class="form-label">目的地</label><input type="text" class="manga-input" id="transTo" placeholder="台南"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">交通類型</label>
+      <select class="manga-input" id="transType">
+        <option value="🚄">🚄 台灣高鐵</option><option value="🚂">🚂 台鐵</option><option value="🚌">🚌 客運</option>
+        <option value="🚲">🚲 YouBike</option><option value="🚌">🚌 公車</option><option value="🚕">🚕 計程車/Uber</option>
+        <option value="🛵">🛵 機車</option><option value="✈️">✈️ 飛機</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">時間</label><input type="text" class="manga-input" id="transDuration" placeholder="1h40m"></div>
+      <div class="form-group"><label class="form-label">票價 (NT$)</label><input type="number" class="manga-input" id="transPrice" placeholder="1350"></div>
+    </div>
+    <div class="form-group"><label class="form-label">備注</label><input type="text" class="manga-input" id="transNote" placeholder="需提前預訂、早鳥優惠..."></div>
+    <button class="manga-btn" style="width:100%;padding:12px;" onclick="addTransport()">✚ 新增交通方式</button>
+  </div>
+</div>
+
+<!-- Add Budget Modal -->
+<div class="modal-overlay" id="addBudgetModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">💰 ADD EXPENSE</div>
+      <button class="modal-close" onclick="closeModal('addBudgetModal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">類別</label>
+      <select class="manga-input" id="budgetCat">
+        <option value="🚄">🚄 交通費</option><option value="🏨">🏨 住宿</option>
+        <option value="🍜">🍜 餐飲</option><option value="🎫">🎫 門票</option>
+        <option value="🛍">🛍 購物</option><option value="🎮">🎮 娛樂</option>
+        <option value="💊">💊 其他</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">說明</label><input type="text" class="manga-input" id="budgetDesc" placeholder="例：高鐵來回 × 2人"></div>
+    <div class="form-group"><label class="form-label">金額 (NT$)</label><input type="number" class="manga-input" id="budgetAmt" placeholder="0"></div>
+    <button class="manga-btn" style="width:100%;padding:12px;" onclick="addBudgetItem()">💰 新增費用</button>
+  </div>
+</div>
+
+<!-- Edit Budget Modal -->
+<div class="modal-overlay" id="editBudgetModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="editBudgetTitle">✏ EDIT</div>
+      <button class="modal-close" onclick="closeModal('editBudgetModal')">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">金額 (NT$)</label><input type="number" class="manga-input" id="editBudgetAmt" placeholder="0"></div>
+    <div class="form-group"><label class="form-label">說明</label><input type="text" class="manga-input" id="editBudgetDesc"></div>
+    <button class="manga-btn" style="width:100%;padding:12px;" onclick="saveEditBudget()">✓ 儲存</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ 完成！</div>
+
+<!-- Google Maps API -->
+<script>
+const MAPS_API_KEY = 'AIzaSyAOEmt517hcJWcSkmS8WVdHjZCuvDevkwI';
+
+// ===== STATE =====
+let currentUser = localStorage.getItem('currentUser') || 'weiwun';
+let map, modalMap, placesService, modalPlacesService;
+let markers = [], modalMarker = null, modalSearchBox = null;
+let selectedPlace = null, currentFilter = '';
+let currentEditBudgetEl = null;
+
+// ===== INIT =====
+function initApp() {
+  updateUserUI();
+  renderPlaces();
+
+  // Set greeting
+  const isWW = currentUser === 'weiwun';
+  document.getElementById('homeGreet').textContent = isWW ? '今天是韋彣在規劃！' : '今天是米米在規劃！✩';
+  document.getElementById('homeCharEmoji').textContent = isWW ? '🎸' : '🌸';
+}
+
+function initMaps() {
+  // Main map
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: { lat: 23.97, lng: 120.97 }, zoom: 8,
+    styles: mangaMapStyle(),
+    mapTypeControl: false, streetViewControl: false, fullscreenControl: false,
+  });
+  placesService = new google.maps.places.PlacesService(map);
+
+  // Modal map
+  modalMap = new google.maps.Map(document.getElementById('modalMap'), {
+    center: { lat: 25.033, lng: 121.565 }, zoom: 14,
+    styles: mangaMapStyle(),
+    mapTypeControl: false, streetViewControl: false, fullscreenControl: false,
+  });
+  modalPlacesService = new google.maps.places.PlacesService(modalMap);
+
+  const modalInput = document.getElementById('itemSearchInput');
+  modalSearchBox = new google.maps.places.SearchBox(modalInput);
+  modalMap.addListener('bounds_changed', () => modalSearchBox.setBounds(modalMap.getBounds()));
+  modalSearchBox.addListener('places_changed', () => {
+    const places = modalSearchBox.getPlaces();
+    if (!places.length) return;
+    const p = places[0];
+    if (modalMarker) modalMarker.setMap(null);
+    modalMarker = new google.maps.Marker({ position: p.geometry.location, map: modalMap, icon: pinkMarkerIcon() });
+    modalMap.setCenter(p.geometry.location); modalMap.setZoom(16);
+    selectedPlace = p;
+    document.getElementById('itemName').value = p.name;
+    const info = document.getElementById('itemSelectedInfo');
+    info.style.display = 'block';
+    info.innerHTML = `📍 ${p.name} — ${p.formatted_address || ''}`;
+  });
+}
+
+function mangaMapStyle() {
+  return [
+    {featureType:'all',elementType:'geometry',stylers:[{color:'#f5f0e8'}]},
+    {featureType:'water',elementType:'geometry',stylers:[{color:'#b3d9f0'}]},
+    {featureType:'road.arterial',elementType:'geometry',stylers:[{color:'#fff0f4'}]},
+    {featureType:'road.highway',elementType:'geometry',stylers:[{color:'#ffd0e0'}]},
+    {featureType:'road',elementType:'geometry.stroke',stylers:[{color:'#1a1a2e'}]},
+    {featureType:'poi.park',elementType:'geometry',stylers:[{color:'#c8f7c5'}]},
+    {featureType:'transit',elementType:'geometry',stylers:[{color:'#ffd93d'}]},
+    {featureType:'poi',elementType:'labels.icon',stylers:[{visibility:'off'}]},
+    {elementType:'labels.text.fill',stylers:[{color:'#1a1a2e'}]},
+    {elementType:'labels.text.stroke',stylers:[{color:'#f5f0e8'}]},
+  ];
+}
+
+function pinkMarkerIcon() {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="38" viewBox="0 0 30 38"><path d="M15 0C8.4 0 3 5.4 3 12c0 10 12 26 12 26S27 22 27 12C27 5.4 21.6 0 15 0z" fill="#ff6b9d" stroke="#1a1a2e" stroke-width="2"/><circle cx="15" cy="12" r="6" fill="#f5f0e8"/></svg>`;
+  return { url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg), scaledSize: new google.maps.Size(30,38), anchor: new google.maps.Point(15,38) };
+}
+
+// ===== NAVIGATION =====
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('nav-' + id).classList.add('active');
+  if (id === 'search') setTimeout(() => { if(map) google.maps.event.trigger(map,'resize'); }, 100);
+}
+
+// ===== USER =====
+function updateUserUI() {
+  const badge = document.getElementById('userBadge');
+  badge.textContent = currentUser === 'weiwun' ? '韋彣 ▾' : '芊樺(米米) ▾';
+  badge.style.background = currentUser === 'weiwun' ? 'var(--cyan)' : 'var(--pink)';
+}
+function switchUser() {
+  currentUser = currentUser === 'weiwun' ? 'mimi' : 'weiwun';
+  localStorage.setItem('currentUser', currentUser);
+  updateUserUI();
+  const isWW = currentUser === 'weiwun';
+  document.getElementById('homeGreet').textContent = isWW ? '今天是韋彣在規劃！' : '今天是米米在規劃！✩';
+  document.getElementById('homeCharEmoji').textContent = isWW ? '🎸' : '🌸';
+  showToast(isWW ? '🎸 切換為韋彣' : '🌸 切換為米米');
+}
+
+// ===== SEARCH =====
+function doSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q) return;
+  document.getElementById('searchLoadingEl').style.display = 'block';
+  document.getElementById('searchResults').innerHTML = '';
+  document.getElementById('detailPanel').classList.remove('open');
+  clearMarkers();
+
+  const req = { query: q + ' 台灣', fields: ['place_id','name','formatted_address','geometry','rating','opening_hours','types','user_ratings_total'] };
+  if (currentFilter) req.type = currentFilter;
+
+  placesService.textSearch(req, (results, status) => {
+    document.getElementById('searchLoadingEl').style.display = 'none';
+    if (status === 'OK' && results) renderResults(results);
+    else document.getElementById('searchResults').innerHTML = '<div style="padding:20px;text-align:center;font-weight:700;font-size:12px;letter-spacing:1px;color:#aaa;">找不到結果，換個關鍵字試試！</div>';
+  });
+}
+
+function setFilter(type, el) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active'); currentFilter = type;
+}
+
+function renderResults(results) {
+  const container = document.getElementById('searchResults');
+  container.innerHTML = '';
+  clearMarkers();
+
+  const bounds = new google.maps.LatLngBounds();
+
+  results.slice(0,15).forEach((place, i) => {
+    const emoji = getEmoji(place.types);
+    const open = place.opening_hours ? (place.opening_hours.open_now ? 'green' : 'red') : null;
+
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.innerHTML = `
+      <div class="result-emoji">${emoji}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="result-name">${place.name}</div>
+        <div class="result-addr">${place.formatted_address || ''}</div>
+        <div class="result-tags">
+          ${place.rating ? `<span class="rtag yellow">⭐ ${place.rating}</span>` : ''}
+          ${open ? `<span class="rtag ${open}">${open==='green'?'🟢 開中':'🔴 關閉'}</span>` : ''}
+        </div>
+      </div>
+      <button class="result-add-btn" onclick="quickAdd(${i})">＋</button>`;
+    card.addEventListener('click', e => { if(e.target.tagName==='BUTTON') return; selectResult(place, card); });
+    container.appendChild(card);
+
+    // Marker
+    const marker = new google.maps.Marker({
+      position: place.geometry.location, map,
+      title: place.name, icon: pinkMarkerIcon()
+    });
+    marker.addListener('click', () => selectResult(place, card));
+    markers.push(marker);
+    bounds.extend(place.geometry.location);
+  });
+
+  if(markers.length) map.fitBounds(bounds);
+  window._searchResults = results;
+}
+
+function selectResult(place, card) {
+  document.querySelectorAll('.result-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  map.setCenter(place.geometry.location); map.setZoom(16);
+
+  placesService.getDetails({ placeId: place.place_id, fields: ['name','formatted_address','rating','opening_hours','formatted_phone_number','price_level','user_ratings_total'] }, (d, s) => {
+    if (s === 'OK') showDetail(d);
+  });
+}
+
+function showDetail(place) {
+  const panel = document.getElementById('detailPanel');
+  panel.classList.add('open');
+  document.getElementById('detailName').textContent = place.name;
+  document.getElementById('detailAddr').textContent = '📍 ' + (place.formatted_address || '');
+  let meta = '';
+  if (place.rating) meta += `<span class="detail-badge" style="background:var(--yellow);">⭐ ${place.rating} (${place.user_ratings_total||0}則)</span>`;
+  if (place.price_level) meta += `<span class="detail-badge" style="background:#c8f7c5;">${'💰'.repeat(place.price_level)}</span>`;
+  if (place.formatted_phone_number) meta += `<span class="detail-badge">📞 ${place.formatted_phone_number}</span>`;
+  document.getElementById('detailMeta').innerHTML = meta;
+  let hrs = '';
+  if (place.opening_hours?.weekday_text) hrs = place.opening_hours.weekday_text.slice(0,3).join(' · ');
+  else if (place.opening_hours) hrs = place.opening_hours.open_now ? '🟢 目前營業中' : '🔴 目前休息';
+  document.getElementById('detailHours').textContent = hrs || '營業時間未提供';
+  selectedPlace = place;
+}
+
+function addSelectedPlace() {
+  if (!selectedPlace) return;
+  addToTimelineRaw(selectedPlace.name, selectedPlace.formatted_address||'', getEmoji(selectedPlace.types||[]));
+  showToast(`🌸 "${selectedPlace.name}" 已加入行程！`);
+}
+
+function quickAdd(i) {
+  const p = window._searchResults?.[i];
+  if (!p) return;
+  addToTimelineRaw(p.name, p.formatted_address||'', getEmoji(p.types||[]));
+  showToast(`🌸 "${p.name}" 已加入行程！`);
+}
+
+function addToWishlist() {
+  if (!selectedPlace) return;
+  showToast(`♡ 已收藏 "${selectedPlace.name}"`);
+}
+
+function clearMarkers() { markers.forEach(m => m.setMap(null)); markers = []; }
+
+function getEmoji(types) {
+  if(!types) return '📍';
+  if(types.includes('restaurant')||types.includes('food')) return '🍜';
+  if(types.includes('cafe')) return '☕';
+  if(types.includes('lodging')) return '🏨';
+  if(types.includes('park')) return '🌿';
+  if(types.includes('museum')) return '🏛';
+  if(types.includes('tourist_attraction')) return '🏮';
+  if(types.includes('shopping_mall')||types.includes('store')) return '🛍';
+  if(types.includes('bar')||types.includes('night_club')) return '🌙';
+  return '📍';
+}
+
+// ===== SCHEDULE =====
+function selectTrip(el, id) {
+  document.querySelectorAll('.trip-sel-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function selectDay(el, day) {
+  document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('dayNum').textContent = day;
+  const dates = { 1: '2025年3月22日（六）', 2: '2025年3月23日（日）' };
+  document.getElementById('dayDateLabel').textContent = dates[day] || `第 ${day} 天`;
+}
+
+function addDay() {
+  const tabs = document.getElementById('dayTabs');
+  const count = tabs.querySelectorAll('.day-tab').length + 1;
+  const tab = document.createElement('div');
+  tab.className = 'day-tab';
+  tab.textContent = `Day ${count}`;
+  tab.onclick = function() { selectDay(this, count); };
+  tabs.insertBefore(tab, tabs.lastElementChild);
+  showToast(`📅 Day ${count} 已新增！`);
+}
+
+function addToTimelineRaw(name, addr, emoji) {
+  const tl = document.getElementById('timeline');
+  const addBtn = tl.querySelector('.add-tl-btn');
+  const user = currentUser === 'weiwun' ? '韋彣' : '米米';
+  const userClass = currentUser;
+  const item = document.createElement('div');
+  item.className = 'tl-item';
+  item.innerHTML = `
+    <div class="tl-card">
+      <div class="tl-time">待定</div>
+      <div class="tl-icon">${emoji}</div>
+      <div class="tl-content">
+        <h3>${name}</h3>
+        <p>${addr}</p>
+        <div class="tl-tags"><span class="tl-tag" style="background:#ffd0f0;">新加入</span></div>
+      </div>
+      <span class="edit-by"><span class="user-dot ${userClass}"></span> ${user}</span>
+      <div class="tl-actions">
+        <button class="tl-edit" onclick="editItem(this)">✏</button>
+        <button class="tl-del" onclick="delItem(this)">✕</button>
+      </div>
+    </div>`;
+  tl.insertBefore(item, addBtn);
+}
+
+function addItemToTimeline() {
+  const name = document.getElementById('itemName').value || '新地點';
+  const addr = selectedPlace?.formatted_address || '';
+  const cat = document.getElementById('itemCat').value;
+  const time = document.getElementById('itemTime').value;
+  const dur = document.getElementById('itemDur').value;
+  const cost = document.getElementById('itemCost').value;
+
+  const user = currentUser === 'weiwun' ? '韋彣' : '米米';
+  const userClass = currentUser;
+  const tl = document.getElementById('timeline');
+  const addBtn = tl.querySelector('.add-tl-btn');
+  const item = document.createElement('div');
+  item.className = 'tl-item';
+  item.innerHTML = `
+    <div class="tl-card">
+      <div class="tl-time">${time || '待定'}</div>
+      <div class="tl-icon">${cat}</div>
+      <div class="tl-content">
+        <h3>${name}</h3>
+        <p>${addr}</p>
+        <div class="tl-tags">
+          ${dur ? `<span class="tl-tag cost">⏱ ${dur}</span>` : ''}
+          ${cost ? `<span class="tl-tag cost">💰 NT$${cost}</span>` : ''}
+        </div>
+      </div>
+      <span class="edit-by"><span class="user-dot ${userClass}"></span> ${user}</span>
+      <div class="tl-actions">
+        <button class="tl-edit" onclick="editItem(this)">✏</button>
+        <button class="tl-del" onclick="delItem(this)">✕</button>
+      </div>
+    </div>`;
+  tl.insertBefore(item, addBtn);
+
+  closeModal('addItemModal');
+  selectedPlace = null;
+  showToast('🌸 已加入行程！');
+  showPage('schedule');
+}
+
+function delItem(btn) {
+  const item = btn.closest('.tl-item');
+  item.style.opacity = '0'; item.style.transform = 'translateX(20px)'; item.style.transition = 'all 0.25s';
+  setTimeout(() => item.remove(), 250);
+  showToast('✕ 已移除');
+}
+
+function editItem(btn) {
+  // Simple inline time edit
+  const card = btn.closest('.tl-card');
+  const timeEl = card.querySelector('.tl-time');
+  const cur = timeEl.textContent.trim();
+  const newT = prompt('修改時間（格式: 14:30）', cur === '待定' ? '' : cur);
+  if (newT !== null) timeEl.textContent = newT || '待定';
+}
+
+function selTransport(el) {
+  el.closest('.transport-section').querySelectorAll('.transport-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function addTransport() {
+  const from = document.getElementById('transFrom').value;
+  const to = document.getElementById('transTo').value;
+  const type = document.getElementById('transType').value;
+  const dur = document.getElementById('transDuration').value;
+  const price = document.getElementById('transPrice').value;
+  const note = document.getElementById('transNote').value;
+
+  // Add to transport panel
+  const sections = document.querySelectorAll('.transport-section');
+  const section = sections[sections.length - 1];
+  const addBtn = section.querySelector('.add-trip-btn');
+
+  const opt = document.createElement('div');
+  opt.className = 'transport-opt';
+  opt.onclick = function() { selTransport(this); };
+  opt.innerHTML = `
+    <div class="to-icon">${type}</div>
+    <div class="to-info">
+      <div class="to-name">${from} → ${to}</div>
+      <div class="to-detail">${dur}${note ? ' · ' + note : ''}</div>
+    </div>
+    <div class="to-price">$${price || '?'}</div>`;
+  section.insertBefore(opt, addBtn);
+
+  closeModal('addTransportModal');
+  showToast('🚄 交通方式已新增！');
+}
+
+function calcOptimal() {
+  showToast('⚡ 最佳排程計算中...');
+  setTimeout(() => {
+    document.querySelectorAll('.tl-item').forEach((item,i) => {
+      item.classList.remove('optimal');
+      if (i === 0) item.classList.add('optimal');
+    });
+    showToast('✓ 最佳排程已更新！早班高鐵效率最高');
+  }, 1200);
+}
+
+// ===== BUDGET =====
+function recalcBudget() {
+  const items = document.querySelectorAll('#budgetItems .budget-item');
+  let total = 0;
+  items.forEach(item => { total += parseInt(item.dataset.amount) || 0; });
+  document.getElementById('budgetTotal').textContent = total.toLocaleString();
+  document.getElementById('budgetPer').textContent = Math.ceil(total/2).toLocaleString();
+}
+
+function addBudgetItem() {
+  const cat = document.getElementById('budgetCat').value;
+  const desc = document.getElementById('budgetDesc').value || '費用';
+  const amt = parseInt(document.getElementById('budgetAmt').value) || 0;
+
+  const container = document.getElementById('budgetItems');
+  const item = document.createElement('div');
+  item.className = 'budget-item'; item.dataset.amount = amt;
+  item.innerHTML = `
+    <div class="bi-icon">${cat}</div>
+    <div style="flex:1;"><div class="bi-label">${desc}</div><div class="bi-sub">手動新增</div></div>
+    <div class="bi-amount" style="font-family:'Bebas Neue',sans-serif;font-size:20px;">$${amt.toLocaleString()}</div>
+    <button class="bi-edit" onclick="editBudgetItem(this,'${desc}')">✏</button>`;
+  container.appendChild(item);
+
+  recalcBudget();
+  closeModal('addBudgetModal');
+  showToast(`💰 已新增 NT$${amt.toLocaleString()}`);
+
+  // Reset
+  document.getElementById('budgetDesc').value = '';
+  document.getElementById('budgetAmt').value = '';
+}
+
+function editBudgetItem(btn, name) {
+  currentEditBudgetEl = btn.closest('.budget-item');
+  document.getElementById('editBudgetTitle').textContent = `✏ 編輯 ${name}`;
+  document.getElementById('editBudgetAmt').value = currentEditBudgetEl.dataset.amount;
+  document.getElementById('editBudgetDesc').value = currentEditBudgetEl.querySelector('.bi-label').textContent;
+  openModal('editBudgetModal');
+}
+
+function saveEditBudget() {
+  if (!currentEditBudgetEl) return;
+  const amt = parseInt(document.getElementById('editBudgetAmt').value) || 0;
+  const desc = document.getElementById('editBudgetDesc').value;
+  currentEditBudgetEl.dataset.amount = amt;
+  currentEditBudgetEl.querySelector('.bi-amount').textContent = `$${amt.toLocaleString()}`;
+  currentEditBudgetEl.querySelector('.bi-label').textContent = desc;
+  recalcBudget();
+  closeModal('editBudgetModal');
+  showToast('✓ 費用已更新！');
+}
+
+// ===== TRIP =====
+function addTrip() {
+  const name = document.getElementById('tripName').value || '新旅行';
+  const dest = document.getElementById('tripDest').value;
+  const start = document.getElementById('tripStart').value;
+
+  // Add to selector
+  const sel = document.getElementById('tripSelector');
+  const addBtn = sel.querySelector('.manga-btn');
+  const btn = document.createElement('div');
+  btn.className = 'trip-sel-btn';
+  btn.innerHTML = `<span class="sel-dot"></span>${name}`;
+  btn.onclick = function() { selectTrip(this, 'new'); };
+  sel.insertBefore(btn, addBtn);
+
+  // Add to upcoming
+  const upcoming = document.getElementById('upcomingList');
+  const d = start ? new Date(start) : new Date();
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const card = document.createElement('div');
+  card.className = 'trip-card';
+  card.onclick = () => showPage('schedule');
+  card.innerHTML = `
+    <div class="trip-date-box"><div class="m">${months[d.getMonth()]}</div><div class="d">${d.getDate()}</div></div>
+    <div class="trip-card-info"><h3>${name}</h3><p>${dest || '目的地待定'}</p></div>
+    <div class="trip-card-tag">新計畫</div>`;
+  upcoming.insertBefore(card, upcoming.firstChild);
+
+  const s = document.getElementById('stat-trips');
+  s.textContent = parseInt(s.textContent) + 1;
+
+  closeModal('addTripModal');
+  showToast('✈️ 旅行計畫已建立！');
+}
+
+// ===== PLACES =====
+const visited = [
+  { name:'象山步道', emoji:'🏔', date:'2024.12.25', rating:5 },
+  { name:'陽明山花季', emoji:'🌸', date:'2025.03.10', rating:5 },
+  { name:'Foufou 咖啡', emoji:'☕', date:'2025.01.14', rating:4 },
+  { name:'九份老街', emoji:'🏮', date:'2024.11.08', rating:4 },
+  { name:'淡水漁人碼頭', emoji:'🌅', date:'2024.10.20', rating:5 },
+  { name:'貓空纜車', emoji:'🚡', date:'2025.02.08', rating:4 },
+  { name:'台北動物園', emoji:'🐼', date:'2024.09.14', rating:5 },
+  { name:'信義誠品', emoji:'📚', date:'2025.01.20', rating:4 },
+];
+
+function renderPlaces() {
+  const grid = document.getElementById('placesGrid');
+  grid.innerHTML = '';
+  visited.forEach(p => {
+    grid.innerHTML += `
+      <div class="memory-card">
+        <div class="memory-img">${p.emoji}<span class="memory-badge">✓ 去過</span></div>
+        <div class="memory-body">
+          <div class="memory-name">${p.name}</div>
+          <div class="memory-date">🗓 ${p.date}</div>
+          <div class="memory-stars">${'★'.repeat(p.rating)}${'☆'.repeat(5-p.rating)}</div>
+        </div>
+      </div>`;
+  });
+}
+
+// ===== MODAL =====
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  if (id === 'addItemModal') {
+    setTimeout(() => { if(modalMap) google.maps.event.trigger(modalMap,'resize'); }, 200);
+  }
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg;
+  t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// ===== INIT =====
+window.addEventListener('load', initApp);
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOEmt517hcJWcSkmS8WVdHjZCuvDevkwI&libraries=places&callback=initMaps" async defer></script>
+
+</body>
+</html>

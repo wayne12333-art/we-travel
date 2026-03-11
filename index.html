@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🖤 WE TRAVEL — 韋彣 & 芊樺</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700;900&family=Bebas+Neue&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --ink: #1a1a2e;
+    --white: #f5f0e8;
+    --pink: #ff6b9d;
+    --dark-pink: #c2185b;
+    --yellow: #ffd93d;
+    --cyan: #6bcfff;
+    --red: #ff4757;
+    --panel: #f5f0e8;
+    --shadow: #1a1a2e;
+  }
+
+  body {
+    background: var(--white);
+    font-family: 'Noto Sans TC', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23ff6b9d'/%3E%3C/svg%3E"), auto;
+  }
+
+  /* ===== HALFTONE BG ===== */
+  .bg-halftone {
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      radial-gradient(circle, #ff6b9d22 1px, transparent 1px),
+      radial-gradient(circle, #1a1a2e11 1px, transparent 1px);
+    background-size: 24px 24px, 12px 12px;
+    background-position: 0 0, 6px 6px;
+  }
+
+  /* Speed lines */
+  .speed-lines {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 5.5deg, rgba(26,26,46,0.04) 5.5deg, rgba(26,26,46,0.04) 6deg);
+  }
+
+  /* ===== MAIN SCREEN ===== */
+  .selector-screen {
+    position: relative; z-index: 10;
+    height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0;
+  }
+
+  /* Manga title panel */
+  .title-panel {
+    position: relative;
+    background: var(--ink);
+    border: 4px solid var(--ink);
+    padding: 18px 48px 14px;
+    margin-bottom: 8px;
+    clip-path: polygon(4px 0%, calc(100% - 4px) 0%, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0% calc(100% - 4px), 0% 4px);
+  }
+  .title-panel h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px; letter-spacing: 8px;
+    color: var(--white);
+    text-shadow: 4px 4px 0 var(--pink);
+  }
+  .title-panel .subtitle {
+    text-align: center; color: var(--yellow);
+    font-size: 11px; letter-spacing: 4px;
+    font-weight: 700; margin-top: -4px;
+  }
+
+  /* SFX text floating */
+  .sfx {
+    position: fixed; font-family: 'Bebas Neue', sans-serif;
+    color: var(--ink); opacity: 0.07; pointer-events: none; z-index: 1;
+    font-weight: 900; line-height: 1;
+  }
+
+  /* Who are you panel */
+  .who-panel {
+    background: var(--pink);
+    border: 3px solid var(--ink);
+    padding: 8px 28px;
+    margin-bottom: 32px;
+    position: relative;
+    transform: rotate(-1deg);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .who-panel::after {
+    content: '★';
+    position: absolute; right: -14px; top: -14px;
+    font-size: 20px; color: var(--yellow);
+    text-shadow: 2px 2px 0 var(--ink);
+  }
+  .who-panel p {
+    font-size: 13px; font-weight: 900; color: var(--ink);
+    letter-spacing: 3px; text-transform: uppercase;
+  }
+
+  /* Character cards */
+  .characters {
+    display: flex; gap: 40px; align-items: flex-end;
+  }
+
+  .char-card {
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.15s;
+  }
+  .char-card:hover { transform: translateY(-8px) rotate(1deg); }
+  .char-card:hover .char-frame { box-shadow: 8px 8px 0 var(--pink), 12px 12px 0 var(--ink); }
+
+  .char-frame {
+    width: 200px;
+    background: var(--white);
+    border: 3px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+    transition: box-shadow 0.15s;
+    position: relative; overflow: hidden;
+  }
+
+  /* Manga character illustration area */
+  .char-art {
+    height: 240px;
+    display: flex; align-items: flex-end; justify-content: center;
+    position: relative; overflow: hidden;
+    background: linear-gradient(180deg, #fff8f0 0%, #ffe0ee 100%);
+    border-bottom: 3px solid var(--ink);
+  }
+
+  /* SVG Manga character */
+  .char-svg { width: 160px; position: relative; z-index: 2; }
+
+  /* Speech bubble */
+  .speech-bubble {
+    position: absolute; top: 10px; right: -8px; z-index: 5;
+    background: var(--white);
+    border: 2px solid var(--ink);
+    border-radius: 12px 12px 12px 2px;
+    padding: 5px 9px;
+    font-size: 10px; font-weight: 700; color: var(--ink);
+    white-space: nowrap;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .speech-bubble::after {
+    content: ''; position: absolute; bottom: -8px; left: 8px;
+    border: 4px solid transparent;
+    border-top-color: var(--ink);
+  }
+
+  /* Screentone dots on char art */
+  .char-art::before {
+    content: '';
+    position: absolute; inset: 0; z-index: 1;
+    background-image: radial-gradient(circle, rgba(26,26,46,0.12) 1px, transparent 1px);
+    background-size: 8px 8px;
+    pointer-events: none;
+  }
+
+  /* Action lines behind character */
+  .action-lines {
+    position: absolute; inset: 0; z-index: 0;
+    background: repeating-conic-gradient(from 0deg at 50% 110%, transparent 0deg, transparent 8deg, rgba(255,107,157,0.15) 8deg, rgba(255,107,157,0.15) 9deg);
+  }
+
+  .char-name-plate {
+    padding: 10px 14px 8px;
+    background: var(--ink);
+  }
+  .char-name-plate .name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; color: var(--white);
+    letter-spacing: 4px; line-height: 1;
+    display: block;
+  }
+  .char-name-plate .name-zh {
+    font-size: 11px; color: var(--pink);
+    letter-spacing: 2px; font-weight: 700;
+  }
+
+  .char-tag {
+    position: absolute; top: -10px; left: -10px;
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+    padding: 3px 8px;
+    font-size: 10px; font-weight: 900; color: var(--ink);
+    transform: rotate(-3deg);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .char-tag.p2 { transform: rotate(3deg); }
+
+  /* Press start */
+  .press-start {
+    margin-top: 32px;
+    font-size: 12px; font-weight: 700; color: var(--ink);
+    letter-spacing: 3px; text-transform: uppercase;
+    animation: blink 1.4s step-end infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* Floating manga elements */
+  .float-elem {
+    position: fixed; pointer-events: none; z-index: 2;
+    font-size: 20px; animation: floatAround linear infinite;
+    opacity: 0.35;
+  }
+  @keyframes floatAround {
+    0%   { transform: translateY(0) rotate(0deg); }
+    25%  { transform: translateY(-12px) rotate(5deg); }
+    75%  { transform: translateY(8px) rotate(-5deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+  }
+
+  /* Stars/sparkles */
+  .sparkle {
+    position: fixed; pointer-events: none; z-index: 2;
+    animation: sparkleAnim 2s ease-in-out infinite;
+  }
+  @keyframes sparkleAnim {
+    0%,100% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+    50%      { transform: scale(1.3) rotate(15deg); opacity: 1; }
+  }
+
+  /* Transition overlay */
+  .transition-overlay {
+    position: fixed; inset: 0; z-index: 999;
+    background: var(--ink);
+    transform: scaleY(0); transform-origin: top;
+    transition: transform 0.4s cubic-bezier(0.7,0,0.3,1);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .transition-overlay.active { transform: scaleY(1); }
+  .transition-overlay .loading-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px; color: var(--pink);
+    letter-spacing: 8px;
+    opacity: 0; transition: opacity 0.2s 0.2s;
+  }
+  .transition-overlay.active .loading-text { opacity: 1; }
+
+  /* Easter egg */
+  .easter-egg {
+    position: fixed; bottom: 20px; right: 20px; z-index: 50;
+    font-size: 11px; color: var(--ink); opacity: 0.3;
+    cursor: pointer; letter-spacing: 1px;
+    transition: opacity 0.2s;
+  }
+  .easter-egg:hover { opacity: 1; }
+
+  /* Konami popup */
+  .konami-popup {
+    display: none;
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(26,26,46,0.85);
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .konami-popup.show { display: flex; }
+  .konami-inner {
+    background: var(--white);
+    border: 4px solid var(--ink);
+    padding: 32px; text-align: center;
+    box-shadow: 8px 8px 0 var(--pink), 12px 12px 0 var(--ink);
+    max-width: 360px;
+    animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn { from{transform:scale(0.5) rotate(-10deg)} to{transform:scale(1) rotate(0deg)} }
+  .konami-inner h2 { font-family:'Bebas Neue',sans-serif; font-size:36px; color:var(--pink); letter-spacing:4px; }
+  .konami-inner p { font-size:14px; margin:12px 0; color:var(--ink); line-height:1.6; }
+  .konami-close {
+    background: var(--ink); color: var(--white);
+    border: none; padding: 8px 24px; font-family:'Noto Sans TC',sans-serif;
+    font-size:13px; font-weight:700; cursor:pointer; margin-top:8px;
+    box-shadow: 3px 3px 0 var(--pink);
+  }
+
+  /* Version badge */
+  .version-badge {
+    position: fixed; top: 16px; left: 16px; z-index: 50;
+    background: var(--yellow); border: 2px solid var(--ink);
+    padding: 3px 10px; font-size: 10px; font-weight: 900;
+    color: var(--ink); transform: rotate(-2deg);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-halftone"></div>
+<div class="speed-lines"></div>
+
+<!-- SFX background text -->
+<div class="sfx" style="font-size:160px;top:-20px;left:-20px;transform:rotate(-10deg)">LOVE</div>
+<div class="sfx" style="font-size:120px;bottom:10px;right:-10px;transform:rotate(8deg)">TRIP</div>
+<div class="sfx" style="font-size:80px;top:40%;left:50%;transform:rotate(-5deg)">NANA</div>
+
+<!-- Floating elements -->
+<div class="float-elem" style="top:15%;left:10%;animation-duration:3.5s;">🌸</div>
+<div class="float-elem" style="top:25%;right:12%;animation-duration:4.2s;animation-delay:-1s;">⭐</div>
+<div class="float-elem" style="bottom:20%;left:8%;animation-duration:3.8s;animation-delay:-2s;">🎸</div>
+<div class="float-elem" style="bottom:15%;right:10%;animation-duration:4.5s;animation-delay:-0.5s;">🗺️</div>
+<div class="float-elem" style="top:60%;left:4%;animation-duration:5s;animation-delay:-1.5s;">💌</div>
+
+<!-- Sparkles -->
+<div class="sparkle" style="top:20%;left:30%;font-size:18px;">✦</div>
+<div class="sparkle" style="top:70%;right:25%;font-size:14px;animation-delay:-1s;">✧</div>
+<div class="sparkle" style="bottom:35%;left:45%;font-size:22px;animation-delay:-0.5s;">✦</div>
+
+<div class="version-badge">V 2.0 NANA</div>
+
+<!-- Main Selector -->
+<div class="selector-screen">
+  <div class="title-panel">
+    <h1>WE TRAVEL</h1>
+    <div class="subtitle">✦ OUR LOVE STORY ON THE ROAD ✦</div>
+  </div>
+
+  <div class="who-panel">
+    <p>今天是誰在規劃旅行？</p>
+  </div>
+
+  <div class="characters">
+    <!-- 韋彣 -->
+    <div class="char-card" onclick="selectUser('weiwun')" id="card-weiwun">
+      <div class="char-tag">P1</div>
+      <div class="char-frame">
+        <div class="char-art">
+          <div class="action-lines"></div>
+          <div class="speech-bubble">今天去哪？！</div>
+          <!-- SVG Manga boy character -->
+          <svg class="char-svg" viewBox="0 0 160 240" xmlns="http://www.w3.org/2000/svg">
+            <!-- Body shadow -->
+            <ellipse cx="80" cy="235" rx="45" ry="5" fill="rgba(0,0,0,0.15)"/>
+            <!-- Legs -->
+            <rect x="58" y="185" width="18" height="50" rx="6" fill="#2d2d44"/>
+            <rect x="82" y="185" width="18" height="50" rx="6" fill="#1a1a2e"/>
+            <!-- Shoes -->
+            <ellipse cx="67" cy="234" rx="12" ry="5" fill="#111"/>
+            <ellipse cx="91" cy="234" rx="12" ry="5" fill="#111"/>
+            <!-- Body/jacket -->
+            <rect x="45" y="120" width="70" height="75" rx="10" fill="#1a1a2e"/>
+            <!-- Jacket detail -->
+            <rect x="73" y="120" width="3" height="75" fill="#2d2d44"/>
+            <!-- Collar -->
+            <polygon points="73,120 60,130 73,145" fill="#ff6b9d"/>
+            <polygon points="76,120 89,130 76,145" fill="#ff6b9d"/>
+            <!-- Arms -->
+            <rect x="25" y="122" width="22" height="55" rx="8" fill="#1a1a2e" transform="rotate(8,36,149)"/>
+            <rect x="113" y="122" width="22" height="55" rx="8" fill="#1a1a2e" transform="rotate(-12,124,149)"/>
+            <!-- Hands -->
+            <circle cx="32" cy="178" r="9" fill="#f4c2a1"/>
+            <circle cx="127" cy="176" r="9" fill="#f4c2a1"/>
+            <!-- Neck -->
+            <rect x="70" y="108" width="20" height="18" rx="5" fill="#f4c2a1"/>
+            <!-- Head -->
+            <ellipse cx="80" cy="88" rx="38" ry="40" fill="#f4c2a1"/>
+            <!-- Hair -->
+            <ellipse cx="80" cy="58" rx="40" ry="22" fill="#2d2d44"/>
+            <rect x="42" y="55" width="14" height="35" rx="7" fill="#2d2d44"/>
+            <rect x="104" y="55" width="14" height="35" rx="7" fill="#2d2d44"/>
+            <!-- Bangs -->
+            <path d="M46,70 Q55,55 65,68" fill="#2d2d44"/>
+            <path d="M62,65 Q72,50 82,65" fill="#2d2d44"/>
+            <path d="M79,63 Q90,48 98,62" fill="#2d2d44"/>
+            <!-- Eyes -->
+            <ellipse cx="65" cy="90" rx="9" ry="11" fill="white"/>
+            <ellipse cx="95" cy="90" rx="9" ry="11" fill="white"/>
+            <ellipse cx="65" cy="91" rx="7" ry="8" fill="#1a1a2e"/>
+            <ellipse cx="95" cy="91" rx="7" ry="8" fill="#1a1a2e"/>
+            <circle cx="68" cy="88" r="2.5" fill="white"/>
+            <circle cx="98" cy="88" r="2.5" fill="white"/>
+            <!-- Eyebrows -->
+            <path d="M56,78 Q65,73 74,78" stroke="#2d2d44" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M86,78 Q95,73 104,78" stroke="#2d2d44" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <!-- Blush -->
+            <ellipse cx="55" cy="98" rx="8" ry="4" fill="#ffaabb" opacity="0.5"/>
+            <ellipse cx="105" cy="98" rx="8" ry="4" fill="#ffaabb" opacity="0.5"/>
+            <!-- Mouth -->
+            <path d="M73,108 Q80,115 87,108" stroke="#c0706a" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <!-- Earring -->
+            <circle cx="42" cy="93" r="3" fill="#ffd93d" stroke="#1a1a2e" stroke-width="1"/>
+            <!-- Manga motion lines around head -->
+            <line x1="20" y1="40" x2="35" y2="58" stroke="#1a1a2e" stroke-width="1" opacity="0.3"/>
+            <line x1="140" y1="35" x2="125" y2="55" stroke="#1a1a2e" stroke-width="1" opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="char-name-plate">
+          <span class="name">WEI WUN</span>
+          <span class="name-zh">韋 彣</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VS text -->
+    <div style="text-align:center;margin-bottom:48px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--ink);text-shadow:3px 3px 0 var(--pink);line-height:1;">♥</div>
+    </div>
+
+    <!-- 芊樺 (米米) -->
+    <div class="char-card" onclick="selectUser('mimi')" id="card-mimi">
+      <div class="char-tag p2">P2</div>
+      <div class="char-frame">
+        <div class="char-art" style="background:linear-gradient(180deg,#fff0f8 0%,#ffd0e8 100%);">
+          <div class="action-lines" style="background:repeating-conic-gradient(from 0deg at 50% 110%, transparent 0deg, transparent 8deg, rgba(255,215,63,0.2) 8deg, rgba(255,215,63,0.2) 9deg);"></div>
+          <div class="speech-bubble" style="background:var(--yellow);border-color:var(--ink);">米米出發！✩</div>
+          <!-- SVG Manga girl character -->
+          <svg class="char-svg" viewBox="0 0 160 240" xmlns="http://www.w3.org/2000/svg">
+            <!-- Shadow -->
+            <ellipse cx="80" cy="235" rx="45" ry="5" fill="rgba(0,0,0,0.12)"/>
+            <!-- Skirt -->
+            <path d="M50,175 Q55,210 80,215 Q105,210 110,175 Z" fill="#ff6b9d"/>
+            <path d="M50,175 Q55,210 80,215 Q105,210 110,175 Z" fill="none" stroke="#1a1a2e" stroke-width="2"/>
+            <!-- Skirt pleats -->
+            <line x1="68" y1="178" x2="72" y2="213" stroke="#c2185b" stroke-width="1.5" opacity="0.5"/>
+            <line x1="80" y1="178" x2="80" y2="215" stroke="#c2185b" stroke-width="1.5" opacity="0.5"/>
+            <line x1="92" y1="178" x2="88" y2="213" stroke="#c2185b" stroke-width="1.5" opacity="0.5"/>
+            <!-- Legs -->
+            <rect x="62" y="210" width="12" height="24" rx="5" fill="#f4c2a1"/>
+            <rect x="86" y="210" width="12" height="24" rx="5" fill="#f4c2a1"/>
+            <!-- Shoes -->
+            <ellipse cx="68" cy="233" rx="10" ry="4" fill="#1a1a2e"/>
+            <ellipse cx="92" cy="233" rx="10" ry="4" fill="#1a1a2e"/>
+            <circle cx="72" cy="230" r="3" fill="#ff6b9d"/>
+            <circle cx="96" cy="230" r="3" fill="#ff6b9d"/>
+            <!-- Body -->
+            <rect x="50" y="125" width="60" height="55" rx="8" fill="white"/>
+            <rect x="50" y="125" width="60" height="55" rx="8" fill="none" stroke="#1a1a2e" stroke-width="2"/>
+            <!-- Cardigan/top detail -->
+            <path d="M50,135 L80,145 L110,135" stroke="#ffb3cc" stroke-width="6" fill="none"/>
+            <rect x="64" y="125" width="32" height="55" fill="#fff5f8" opacity="0.6"/>
+            <!-- Bow on top -->
+            <path d="M68,127 Q80,118 92,127" stroke="#ff6b9d" stroke-width="4" fill="none"/>
+            <circle cx="80" cy="126" r="4" fill="#ff6b9d" stroke="#1a1a2e" stroke-width="1.5"/>
+            <!-- Arms -->
+            <rect x="28" y="127" width="24" height="50" rx="9" fill="white" stroke="#1a1a2e" stroke-width="2" transform="rotate(10,40,152)"/>
+            <rect x="108" y="127" width="24" height="50" rx="9" fill="white" stroke="#1a1a2e" stroke-width="2" transform="rotate(-10,120,152)"/>
+            <!-- Hands -->
+            <circle cx="34" cy="175" r="9" fill="#f4c2a1" stroke="#1a1a2e" stroke-width="1.5"/>
+            <circle cx="126" cy="175" r="9" fill="#f4c2a1" stroke="#1a1a2e" stroke-width="1.5"/>
+            <!-- Bag -->
+            <rect x="112" y="148" width="22" height="18" rx="4" fill="#ffd93d" stroke="#1a1a2e" stroke-width="2"/>
+            <path d="M116,148 Q123,138 130,148" stroke="#1a1a2e" stroke-width="2" fill="none"/>
+            <!-- Neck -->
+            <rect x="68" y="112" width="24" height="18" rx="5" fill="#f4c2a1"/>
+            <!-- Head -->
+            <ellipse cx="80" cy="90" rx="36" ry="38" fill="#f4c2a1"/>
+            <!-- Hair base (long) -->
+            <ellipse cx="80" cy="62" rx="38" ry="20" fill="#2d1810"/>
+            <rect x="44" y="60" width="16" height="80" rx="8" fill="#2d1810"/>
+            <rect x="100" y="60" width="16" height="80" rx="8" fill="#2d1810"/>
+            <!-- Hair highlights -->
+            <path d="M52,70 Q58,62 64,72" fill="#5c3a2a" opacity="0.7"/>
+            <path d="M90,60 Q98,52 106,62" fill="#5c3a2a" opacity="0.7"/>
+            <!-- Side hair strands -->
+            <path d="M44,85 Q36,95 40,110 Q44,120 48,115" fill="#2d1810"/>
+            <path d="M116,85 Q124,95 120,110 Q116,120 112,115" fill="#2d1810"/>
+            <!-- Hair accessories -->
+            <circle cx="58" cy="68" r="5" fill="#ff6b9d" stroke="#1a1a2e" stroke-width="1.5"/>
+            <circle cx="102" cy="68" r="5" fill="#ffd93d" stroke="#1a1a2e" stroke-width="1.5"/>
+            <!-- Eyes (bigger, more sparkly) -->
+            <ellipse cx="65" cy="92" rx="10" ry="12" fill="white"/>
+            <ellipse cx="95" cy="92" rx="10" ry="12" fill="white"/>
+            <ellipse cx="65" cy="93" rx="8" ry="10" fill="#3d1c52"/>
+            <ellipse cx="95" cy="93" rx="8" ry="10" fill="#3d1c52"/>
+            <ellipse cx="65" cy="93" rx="5" ry="7" fill="#6b3fa0"/>
+            <ellipse cx="95" cy="93" rx="5" ry="7" fill="#6b3fa0"/>
+            <circle cx="69" cy="89" r="3" fill="white"/>
+            <circle cx="99" cy="89" r="3" fill="white"/>
+            <circle cx="62" cy="96" r="1.5" fill="white" opacity="0.7"/>
+            <circle cx="92" cy="96" r="1.5" fill="white" opacity="0.7"/>
+            <!-- Sparkle in eyes -->
+            <path d="M73,87 L75,83 L77,87 L73,87" fill="white" opacity="0.8"/>
+            <path d="M103,87 L105,83 L107,87 L103,87" fill="white" opacity="0.8"/>
+            <!-- Eyelashes -->
+            <path d="M55,88 L58,82" stroke="#2d1810" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M58,85 L61,79" stroke="#2d1810" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M105,88 L102,82" stroke="#2d1810" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M102,85 L99,79" stroke="#2d1810" stroke-width="1.5" stroke-linecap="round"/>
+            <!-- Eyebrows (curved, cute) -->
+            <path d="M55,80 Q65,74 74,79" stroke="#2d1810" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M86,79 Q95,74 105,80" stroke="#2d1810" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- Blush (bigger) -->
+            <ellipse cx="53" cy="102" rx="9" ry="5" fill="#ffb3cc" opacity="0.6"/>
+            <ellipse cx="107" cy="102" rx="9" ry="5" fill="#ffb3cc" opacity="0.6"/>
+            <!-- Nose -->
+            <path d="M78,103 Q80,107 82,103" stroke="#e0a080" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- Mouth (smile) -->
+            <path d="M70,112 Q80,120 90,112" stroke="#c0706a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- Stars near face -->
+            <text x="28" y="72" font-size="10" fill="#ffd93d">✦</text>
+            <text x="124" y="68" font-size="10" fill="#ff6b9d">✦</text>
+          </svg>
+        </div>
+        <div class="char-name-plate" style="background:var(--dark-pink);">
+          <span class="name">MIMI</span>
+          <span class="name-zh">芊 樺</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="press-start">▼ 點選角色開始 ▼</div>
+</div>
+
+<!-- Transition -->
+<div class="transition-overlay" id="transition">
+  <div class="loading-text" id="loadingText">LOADING...</div>
+</div>
+
+<!-- Easter egg hint -->
+<div class="easter-egg" onclick="showEasterEgg()" title="祕密">↑↑↓↓←→←→</div>
+
+<!-- Konami popup -->
+<div class="konami-popup" id="konamiPopup">
+  <div class="konami-inner">
+    <h2>💌 SECRET!</h2>
+    <p>韋彣 & 米米<br>每一次旅行都是<br>寫給彼此的情書 ♥</p>
+    <p style="font-size:20px;margin:8px 0;">🌸 🗺️ 🚄 ☕ 🌙</p>
+    <p style="font-size:11px;color:#888;">你們是天生一對的旅行搭檔！</p>
+    <button class="konami-close" onclick="document.getElementById('konamiPopup').classList.remove('show')">收下這份心意 ♥</button>
+  </div>
+</div>
+
+<script>
+function selectUser(user) {
+  const overlay = document.getElementById('transition');
+  const text = document.getElementById('loadingText');
+  text.textContent = user === 'mimi' ? '芊樺 登場！✩' : '韋彣 出發！';
+  overlay.classList.add('active');
+  setTimeout(() => {
+    localStorage.setItem('currentUser', user);
+    window.location.href = 'app.html';
+  }, 600);
+}
+
+// Konami code easter egg
+let konamiSeq = [];
+const konamiCode = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+document.addEventListener('keydown', e => {
+  konamiSeq.push(e.key);
+  if (konamiSeq.length > 10) konamiSeq.shift();
+  if (JSON.stringify(konamiSeq) === JSON.stringify(konamiCode)) showEasterEgg();
+});
+function showEasterEgg() {
+  document.getElementById('konamiPopup').classList.add('show');
+}
+
+// Click counter easter egg
+let clickCount = 0;
+document.querySelector('.title-panel').addEventListener('click', () => {
+  clickCount++;
+  if (clickCount === 5) showEasterEgg();
+});
+</script>
+</body>
+</html>
